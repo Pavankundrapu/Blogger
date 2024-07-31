@@ -4,6 +4,7 @@ import { Button, Input, RTE, Select } from "..";
 import appwriteService from "../../appwrite/config";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import Swal from "sweetalert2";
 
 export default function PostForm({ post }) {
     const { register, handleSubmit, watch, setValue, control, getValues } = useForm({
@@ -32,7 +33,15 @@ export default function PostForm({ post }) {
             });
 
             if (dbPost) {
-                navigate(`/post/${dbPost.$id}`);
+                Swal.fire({
+                    title: "Good job!",
+                    text: "you updated the post!",
+                    icon: "success",
+                    timer: 2000,
+                }).then(() => {
+                    navigate(`/`);
+                });
+                
             }
         } else {
             const file = await appwriteService.uploadFile(data.image[0]);
@@ -43,7 +52,14 @@ export default function PostForm({ post }) {
                 const dbPost = await appwriteService.createPost({ ...data, userId: userData.$id });
 
                 if (dbPost) {
-                    navigate(`/post/${dbPost.$id}`);
+                    Swal.fire({
+
+                        title: "Good job!",
+                        text: "You created a new post!",
+                        icon: "success",
+                        timer: 2000,
+                    })
+                    .then(() => {navigate(`/`)});
                 }
             }
         }
